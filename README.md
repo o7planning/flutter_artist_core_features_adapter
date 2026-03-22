@@ -1,0 +1,2 @@
+# flutter_artist_core_features_adapter
+
