@@ -79,10 +79,11 @@ class MaterialFlutterArtistCoreFeaturesAdapter
 
   @override
   void showSavedSnackBar({Duration duration = const Duration(seconds: 2)}) {
+    final theme = Theme.of(context);
     _simpleSnackBar(
       icon: const Icon(Icons.check, color: Colors.white),
       text: "Successfully Saved!",
-      color: Colors.green.shade400,
+      color: theme.colorScheme.primary,
       duration: duration,
     );
   }
@@ -92,10 +93,11 @@ class MaterialFlutterArtistCoreFeaturesAdapter
     String? customMessage,
     Duration duration = const Duration(seconds: 2),
   }) {
+    final theme = Theme.of(context);
     _simpleSnackBar(
       icon: const Icon(Icons.delete, color: Colors.white),
       text: customMessage ?? "Successfully Deleted!",
-      color: Colors.deepOrange.shade300,
+      color: theme.colorScheme.error,
       duration: duration,
     );
   }
@@ -145,7 +147,6 @@ class MaterialFlutterArtistCoreFeaturesAdapter
     );
   }
 
-  /// Hàm hiển thị SnackBar chi tiết (Error/Warning/Info)
   void _showSnackBar({
     required String message,
     List<String>? details,
@@ -155,46 +156,91 @@ class MaterialFlutterArtistCoreFeaturesAdapter
     final navContext = FlutterArtistCore.navigatorKey.currentContext;
     if (navContext == null) return;
 
+    final theme = Theme.of(navContext);
     final messenger = ScaffoldMessenger.of(navContext);
+
     messenger.clearSnackBars();
     messenger.showSnackBar(
       SnackBar(
         duration: duration,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        backgroundColor: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.98,
+        ),
+        behavior: SnackBarBehavior.fixed,
+        elevation: 0,
+        padding: EdgeInsets.zero,
         content: Theme(
-          // Dùng Theme của Navigator Context để đảm bảo style chuẩn
-          data: Theme.of(navContext).copyWith(dividerColor: Colors.transparent),
+          data: theme.copyWith(
+            dividerColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
           child: ExpansionTile(
             shape: const Border(),
             collapsedShape: const Border(),
             initiallyExpanded: true,
-            tilePadding: EdgeInsets.zero,
+            tilePadding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+            minTileHeight: 32,
             leading: icon,
-            title: Text(
-              message,
-              style: const TextStyle(fontSize: 13, color: Colors.white),
+            title: Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: theme.colorScheme.onSurfaceVariant,
+                  height: 1.3,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
+            childrenPadding: EdgeInsets.zero,
             children: details == null
                 ? []
-                : details
-                      .map(
-                        (d) => ListTile(
-                          dense: true,
-                          leading: const Icon(
-                            Icons.arrow_right,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          title: Text(
-                            d,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
+                : [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 10),
+                      child: Column(
+                        children: details
+                            .map(
+                              (d) => Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 2),
+                                      child: Icon(
+                                        Icons.arrow_right,
+                                        color: theme
+                                            .colorScheme
+                                            .onSurfaceVariant
+                                            .withValues(alpha: 0.6),
+                                        size: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Expanded(
+                                      child: Text(
+                                        d,
+                                        style: TextStyle(
+                                          color: theme
+                                              .colorScheme
+                                              .onSurfaceVariant
+                                              .withValues(alpha: 0.8),
+                                          fontSize: 12,
+                                          height: 1.3,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                  ],
           ),
         ),
       ),
