@@ -11,8 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  flutter_artist_core:
-    path: ../flutter_artist_core
+  flutter_artist_core: ^0.0.1
 
 
 dev_dependencies:
@@ -56,3 +55,7 @@ flutter:
   #
   # For details regarding fonts in packages, see
   # https://flutter.dev/to/font-from-package
+
+dependency_overrides:
+  flutter_artist_core:
+    path: ../flutter_artist_core
